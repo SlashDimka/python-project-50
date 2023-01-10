@@ -1,9 +1,10 @@
 [tool.poetry]
 name = "hexlet-code"
 version = "0.1.0"
-description = ""
+description = "show difference between two data files"
 authors = ["SlashDimka <korolkovpro@yandex.ru>"]
 readme = "README.md"
+
 packages = [
 {include = "gendiff"},
 ]
@@ -26,8 +27,3 @@ gendiff = "gendiff.scripts.gendiff:main"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.pytest.ini_options]
-pythonpath = [
-  ".",
-]
-asyncio_mode = "strict"
