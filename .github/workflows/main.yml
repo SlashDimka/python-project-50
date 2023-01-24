@@ -1,28 +1,28 @@
-name: CI check
-
-on: push
-
+name: pyci
+on:
+  push:
+    branches:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
+      - uses: actions/checkout@v2 #переносит репозиторий в выбранную выше среду
+      - name: Install python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: install dependencies
+      - name: Install dependencies
         run: |
-          pip install poetry flake8 pytest
-          make install
+          python -m pip install --upgrade poetry
+          poetry install
       - name: Run linter
         run: make lint
-      - name: Run tests
-        run: make test
-      - name: Code Coverage
-        uses: paambaati/codeclimate-action@v3.0.0
+      - name: Test & publish code coverage
+        uses: paambaati/codeclimate-action@v2.7.4
         env:
-          CC_TEST_REPORTER_ID: 16bd29b7576695764aa201000afbfdfa4d3fafb5ff7b7f0d20730998d4959d35
+          CC_TEST_REPORTER_ID: d9e0e8f0be18b42472370df1d089b65d4507697126f7e3b9d47ff69c3f7e59ee
         with:
-          coverageCommand: make test-coverage
+          coverageCommand: make pytest
           debug: true
+
