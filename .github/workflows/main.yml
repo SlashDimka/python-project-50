@@ -4,10 +4,25 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      - name: install dependencies
+        run: |
+          pip install poetry flake8 pytest
+          make install
+      - name: Run linter
+        run: make lint
+      - name: Run tests
+        run: make test
+      - name: Code Coverage
+        uses: paambaati/codeclimate-action@v3.0.0
+        env:
+          CC_TEST_REPORTER_ID: 16bd29b7576695764aa201000afbfdfa4d3fafb5ff7b7f0d20730998d4959d35
+        with:
+          coverageCommand: make test-coverage
+          debug: true
