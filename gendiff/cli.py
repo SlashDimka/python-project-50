@@ -1,14 +1,16 @@
 import argparse
 
 
-def parse():
-    parser = argparse.ArgumentParser(
-        description='Compares two configuration files and shows a difference.'
-    )
-    parser.add_argument('first_file')
-    parser.add_argument('second_file')
-    parser.add_argument('-f', '--format',
-                        default='stylish',
-                        choices=['stylish', 'plain', 'json'],
+DESCRIPTION = 'Compares two configuration files and shows a difference.'
+
+
+def display_cli():
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
+    parser.add_argument('first_file', metavar='first_file', type=str)
+    parser.add_argument('second_file', metavar='second_file', type=str)
+    parser.add_argument('-f', '--format', dest='FORMAT', nargs='?',
+                        default='stylish', type=str,
                         help='set format of output')
-    return parser.parse_args()
+
+    args = parser.parse_args()
+    return args.first_file, args.second_file, args.FORMAT
