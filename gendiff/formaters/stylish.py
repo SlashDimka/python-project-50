@@ -1,60 +1,66 @@
-from gendiff.get_diff_engine import get_diff
+#!/usr/bin/env python
+
+import json
+from gendiff.data_comparer import NESTED, ADDED, REMOVED, CHANGED, UNCHANGED
 
 
-def display_diff(diff):     # noqa: C901
-    result = ['{\n', '}']
+INDENT = '    '
+FLAGS = {
+    ADDED: '  + ',
+    REMOVED: '  - ',
+    UNCHANGED: '    '
+}
 
-    def walk(data, depth):
-        for x in data:
-            spaces_count = 2 + depth
 
-            if x['status'] == 'removed':
-                status = '- '
-            elif x['status'] == 'added':
-                status = '+ '
-            elif x['status'] == 'changed':
-                status = '- + '
-            else:
-                status = '  '
+def get_stringify_value(value):
+    if isinstance(value, bool) or value is None:
+        return json.dumps(value)
+    return value
 
-            if x['status'] == 'nested':
-                result.insert(-1, ' ' * (spaces_count + 2) + f'{x["key"]}: '
-                              + '{\n')
-                result.insert(-1, walk(x['children'], depth + 4))
-                result.insert(-1, ' ' * (spaces_count + 2) + '}\n')
-            elif isinstance(x['value'], dict):
-                x['value'] = get_diff(x['value'], x['value'])
-                result.insert(-1, ' ' * spaces_count + status + f'{x["key"]}: '
-                              + '{\n')
-                result.insert(-1, walk(x['value'], depth + 4))
-                result.insert(-1, ' ' * (spaces_count + 2) + '}\n')
-            elif x['status'] == 'changed':
-                if isinstance(x['value'][0], dict):
-                    x['value'][0] = get_diff(x['value'][0], x['value'][0])
-                    result.insert(-1, ' ' * spaces_count + status[0:2]
-                                  + f'{x["key"]}: ' + '{\n')
-                    result.insert(-1, walk(x['value'][0], depth + 4))
-                    result.insert(-1, ' ' * (spaces_count + 2) + '}\n')
-                    result.insert(-1, ' ' * spaces_count + status[2:]
-                                  + f'{x["key"]}: {x["value"][1]}\n')
-                elif isinstance(x['value'][1], dict):
-                    x['value'][1] = get_diff(x['value'][1], x['value'][1])
-                    result.insert(-1, ' ' * spaces_count + status[0:2]
-                                  + f'{x["key"]}: {x["value"][0]}\n')
-                    result.insert(-1, ' ' * spaces_count + status[2:]
-                                  + f'{x["key"]}: ' + '{\n')
-                    result.insert(-1, walk(x['value'][1], depth + 4))
-                    result.insert(-1, ' ' * (spaces_count + 2) + '}\n')
-                else:
-                    result.insert(-1, ' ' * spaces_count + status[0:2]
-                                  + f'{x["key"]}: {x["value"][0]}\n')
-                    result.insert(-1, ' ' * spaces_count + status[2:]
-                                  + f'{x["key"]}: {x["value"][1]}\n')
-            else:
-                result.insert(-1, ' ' * spaces_count + status
-                              + f'{x["key"]}: {x["value"]}\n')
 
-        return ''
+def stringify_value(value, depth):
+    if not isinstance(value, dict):
+        return get_stringify_value(value)
+    string_list = ['{']
+    spaces = INDENT * depth
+    for key, value_ in value.items():
+        if isinstance(value_, dict):
+            string = f'{spaces}{INDENT}{key}: ' \
+                     f'{stringify_value(value_, depth + 1)}'
+            string_list.append(string)
+        else:
+            string = f'{spaces}{INDENT}{key}: {stringify_value(value_, depth)}'
+            string_list.append(string)
+    string_list.append(f'{spaces}}}')
+    return '\n'.join(string_list)
 
-    walk(diff, 0)
-    return ''.join(result)
+
+def stringify_diff(diff, depth):
+    diff_list = []
+    spaces = INDENT * depth
+    for key, flags in diff.items():
+        type_ = flags.get('type')
+        value = flags.get('value')
+        if type_ == NESTED:
+            result_key = f'{spaces}{INDENT}{key}: ' \
+                         f'{{\n{stringify_diff(value, depth + 1)}'
+            result_value = f'{spaces}{INDENT}}}'
+            diff_list.extend([result_key, result_value])
+        elif type_ == CHANGED:
+            old_value = value.get('old value')
+            new_value = value.get('new value')
+            result_key = f'{spaces}{FLAGS[REMOVED]}{key}: ' \
+                         f'{stringify_value(old_value, depth + 1)}'
+            result_value = f'{spaces}{FLAGS[ADDED]}{key}: ' \
+                           f'{stringify_value(new_value, depth + 1)}'
+            diff_list.extend([result_key, result_value])
+        else:
+            result_string = f'{spaces}{FLAGS[type_]}{key}: ' \
+                            f'{stringify_value(value, depth + 1)}'
+            diff_list.append(result_string)
+    return '\n'.join(diff_list)
+
+
+def format_stylish(diff, depth=0):
+    final_list = ['{', stringify_diff(diff, depth), '}']
+    return '\n'.join(final_list)

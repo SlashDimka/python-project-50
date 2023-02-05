@@ -1,38 +1,61 @@
-def transform(value):
-    if value in ['true', 'false', 'null'] or isinstance(value, int):
+import json
+from gendiff.data_comparer import NESTED, ADDED, REMOVED, CHANGED
+
+
+DIFF_MESSAGES = {
+    ADDED: "Property '{path}' was added with value: {value}",
+    REMOVED: "Property '{path}' was removed",
+    CHANGED: "Property '{path}' was updated. From {old_value} to {new_value}"
+}
+
+
+def stringify_value(value):
+    """Gets a string representation of the parameter value."""
+    if isinstance(value, bool) or value is None:
+        return json.dumps(value)
+    elif isinstance(value, str):
+        return f"'{value}'"
+    elif isinstance(value, dict):
+        return '[complex value]'
+    else:
         return value
-    return f"'{value}'"
 
 
-def display_diff(diff):     # noqa: C901
-    result = []
+def get_path_string(previous_path, key):
+    """Gets a string representation of the path."""
+    if previous_path:
+        return previous_path + f'.{key}'
+    return f'{key}'
 
-    def walk(data, path=''):
-        for x in data:
-            path += f".{x['key']}" if path else f"{x['key']}"
 
-            if isinstance(x.get('value'), dict):
-                x['value'] = '[complex value]'
-            elif isinstance(x.get('value'), str):
-                x['value'] = transform(x['value'])
+def get_message_string(diff, previous_path):
+    """Receives messages about changes in the parameters of the files
+    being compared."""
+    messages = []
+    for key, value_types in diff.items():
+        path = get_path_string(previous_path, key)
+        type_ = value_types.get('type')
+        value = value_types.get('value')
+        if type_ == NESTED:
+            messages.append(get_message_string(value, path))
+        elif type_ == CHANGED:
+            old_value = stringify_value(value.get('old value'))
+            new_value = stringify_value(value.get('new value'))
+            message = DIFF_MESSAGES[type_].format(
+                path=path,
+                old_value=old_value,
+                new_value=new_value
+            )
+            messages.append(message)
+        elif type_ == ADDED:
+            value = stringify_value(value_types.get('value'))
+            message = DIFF_MESSAGES[type_].format(path=path, value=value)
+            messages.append(message)
+        elif type_ == REMOVED:
+            message = DIFF_MESSAGES[type_].format(path=path)
+            messages.append(message)
+    return '\n'.join(messages)
 
-            if x['status'] == 'nested':
-                walk(x['children'], path)
-            elif x['status'] == 'removed':
-                result.append(f"Property '{path}' was removed")
-            elif x['status'] == 'added':
-                result.append(f"Property '{path}' was added "
-                              + f"with value: {x['value']}")
-            elif x['status'] == 'changed':
-                x['value'][0] = '[complex value]' \
-                    if isinstance(x.get('value')[0], dict) \
-                    else transform(x['value'][0])
-                x['value'][1] = '[complex value]' \
-                    if isinstance(x.get('value')[1], dict) \
-                    else transform(x['value'][1])
 
-                result.append(f"Property '{path}' was updated. "
-                              + f"From {x['value'][0]} to {x['value'][1]}")
-            path = '.'.join(path.split('.')[:-1])
-    walk(diff)
-    return '\n'.join(result)
+def format_plain(diff):
+    return get_message_string(diff, previous_path='')
