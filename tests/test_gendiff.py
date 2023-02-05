@@ -1,7 +1,7 @@
 import pytest
 from gendiff.gendiff import generate_diff
 from gendiff.file_reader import read_file
-from gendiff.formatters import JSON, STYLISH, PLAIN
+from gendiff.formatters.formats import JSON, STYLISH, PLAIN
 
 
 FLAT_JSON_FILE1 = 'tests/fixtures/file1.json'
