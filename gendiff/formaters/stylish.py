@@ -58,4 +58,3 @@ def display_diff(diff):     # noqa: C901
 
     walk(diff, 0)
     return ''.join(result)
-
