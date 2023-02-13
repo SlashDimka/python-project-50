@@ -1,25 +1,31 @@
 #!/usr/bin/env python
-from gendiff.get_diff_engine import get_diff
-from gendiff.cli import display_cli
-from gendiff.formatter import format_with_formatter
+
+import argparse
+
+from gendiff.gendiff import generate_diff
+from gendiff.formatters.formats import STYLISH, PLAIN, JSON
 
 
-def generate_diff(first_file=None, second_file=None, formatter='stylish'):
-    if first_file and second_file:
-        diff = get_diff(first_file, second_file)
-        result = format_with_formatter(formatter, diff)
-
-        return result
-    else:
-        first_file, second_file, formatter = display_cli()
-        diff = get_diff(first_file, second_file)
-        result = format_with_formatter(formatter, diff)
-
-        print(result)
+def get_args():
+    parser = argparse.ArgumentParser(
+        usage='gendiff [-h] [-f FORMAT] first_file second_file',
+        description='Compares two configuration files and shows a difference'
+    )
+    parser.add_argument('first_file')
+    parser.add_argument('second_file')
+    parser.add_argument(
+        '-f', '--format', choices=[STYLISH, PLAIN, JSON],
+        default=STYLISH,
+        help='set format of output (default: "stylish")'
+    )
+    args = parser.parse_args()
+    return args
 
 
 def main():
-    generate_diff()
+    """Run generate_diff."""
+    args = get_args()
+    print(generate_diff(args.first_file, args.second_file, args.format))
 
 
 if __name__ == '__main__':
