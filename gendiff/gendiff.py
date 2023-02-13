@@ -3,8 +3,8 @@
 from gendiff.file_reader import read_file, get_format
 from gendiff.data_parser import parse
 from gendiff.data_comparer import compare_data
-from gendiff.formatters.formatter import format_diff
-from gendiff.formatters.formats import STYLISH
+from gendiff.formaters.formatter import format_diff
+from gendiff.formaters.formats import STYLISH
 
 
 def generate_diff(filepath1, filepath2, formatter=STYLISH):
