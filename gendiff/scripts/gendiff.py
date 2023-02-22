@@ -3,7 +3,7 @@
 import argparse
 
 from gendiff.gendiff import generate_diff
-from gendiff.formatters.formats import STYLISH, PLAIN, JSON
+from gendiff.formaters.formats import STYLISH, PLAIN, JSON
 
 
 def get_args():

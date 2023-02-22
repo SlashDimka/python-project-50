@@ -9,4 +9,5 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/f06ecbbd4cc7d887d05d/maintainability)](https://codeclimate.com/github/SlashDimka/python-project-50/maintainability)
 
 ### Help output:
+[![asciicast](https://asciinema.org/a/BCrYMBot1PEBruRbLfrwSjiSG.svg)](https://asciinema.org/a/BCrYMBot1PEBruRbLfrwSjiSG)
 [![asciicast](https://asciinema.org/a/2YZuOGtMNrZ386aUf8UJbJMXM.svg)](https://asciinema.org/a/2YZuOGtMNrZ386aUf8UJbJMXM)
