@@ -1,9 +1,15 @@
-.idea
-.venv/
-venv/
+#ignore .venv
+*.venv
+
+#ignore dist/
 dist/
+
+#ignore __pycache__
 __pycache__
-.coverage
-coverage.xml
-.pytest_cache/
-.vim
+
+#ignore coverage.xml
+*.xml
+
+#ignore .coverage
+*.coverage
+
