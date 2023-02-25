@@ -8,23 +8,23 @@
 ### Maintainability:
 [![Maintainability](https://api.codeclimate.com/v1/badges/f06ecbbd4cc7d887d05d/maintainability)](https://codeclimate.com/github/SlashDimka/python-project-50/maintainability)
 
-###Description:
-##Program for compare two files and print difference.
-##Compatibility with JSON and YAML files.
+### Description:
+## Program for compare two files and print difference.
+## Compatibility with JSON and YAML files.
 
-###Installation:
-##Clone repository
+### Installation:
+## Clone repository
 
-##$ git clone https://github.com/SlashDimka/python-project-50.git
-##And install dependencies
+## $ git clone https://github.com/SlashDimka/python-project-50.git
+## And install dependencies
 
-##$ make install
-##or
+## $ make install
+## or
 
-##$ poetry install
-###Requirements
-##Python 3.10 or above
-##Poetry 1.2.0 or above
+## $ poetry install
+### Requirements
+## Python 3.10 or above
+## Poetry 1.2.0 or above
 ### Help output:
 [![asciicast](https://asciinema.org/a/BCrYMBot1PEBruRbLfrwSjiSG.svg)](https://asciinema.org/a/BCrYMBot1PEBruRbLfrwSjiSG)
 ### Comparison of flat files by STYLISH (file formats: JSON):
