@@ -1,6 +1,6 @@
 import pytest
 from gendiff.gendiff import generate_diff
-from gendiff.file_reader import read_file
+from gendiff.parsing import read_file
 from gendiff.formaters.formats import JSON, STYLISH, PLAIN
 
 
