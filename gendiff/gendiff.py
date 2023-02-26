@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from gendiff.file_reader import read_file, get_format
-from gendiff.data_parser import parse
+from gendiff.parsing import read_file, get_format
+from gendiff.parsing import parse
 from gendiff.data_comparer import compare_data
 from gendiff.formaters.formatter import format_diff
 from gendiff.formaters.formats import STYLISH

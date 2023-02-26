@@ -1,31 +1,28 @@
+#!/usr/bin/env python
+
 import json
 import yaml
-from pathlib import Path
+import os
+
+def parse(data, format_):
+    """Parses data"""
+    if format_ == 'json':
+        return json.loads(data)
+    if format_ == 'yaml':
+        return yaml.safe_load(data)
+
+def read_file(filepath):
+    """Reads data from a file"""
+    with open(filepath, 'r') as file:
+        return file.read()
 
 
-def get_file_data(path_to_file):
-    format = get_extention(path_to_file)
-    file_data = load_file_data(open_file(path_to_file), format)
-    return file_data
-
-
-def get_extention(path_to_file):
-    extention = Path(path_to_file).suffix
-    if extention.lower() == '.json':
-        return 'json'
-    elif extention == '.yaml':
+def get_format(filepath):
+    """Gets the file format"""
+    root, ext = os.path.splitext(filepath)
+    if ext == '.yaml' or ext == '.yml':
         return 'yaml'
-    elif extention == '.yml':
-        return 'yml'
-
-
-def open_file(filename):
-    return open(filename)
-
-
-def load_file_data(filename, format):
-    if format == 'json':
-        return json.load(filename)
-    elif format == 'yaml' or format == 'yml':
-        return yaml.safe_load(filename)
+    elif ext == '.json':
+        return 'json'
     raise TypeError("Can't read because input data type is not supported")
+
