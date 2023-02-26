@@ -3,6 +3,7 @@ import json
 import yaml
 import os
 
+
 def parse(data, format_):
     """Parses data"""
     if format_ == 'json':
@@ -10,10 +11,12 @@ def parse(data, format_):
     if format_ == 'yaml':
         return yaml.safe_load(data)
 
+
 def read_file(filepath):
     """Reads data from a file"""
     with open(filepath, 'r') as file:
         return file.read()
+
 
 def get_format(filepath):
     """Gets the file format"""
