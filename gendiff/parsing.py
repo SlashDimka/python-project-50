@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-
 import json
 import yaml
 import os
 
-def parse(data, format_):
+def parse(data, format):
     """Parses data"""
     if format_ == 'json':
         return json.loads(data)
