@@ -16,7 +16,6 @@ def read_file(filepath):
     with open(filepath, 'r') as file:
         return file.read()
 
-
 def get_format(filepath):
     """Gets the file format"""
     root, ext = os.path.splitext(filepath)
@@ -25,4 +24,3 @@ def get_format(filepath):
     elif ext == '.json':
         return 'json'
     raise TypeError("Can't read because input data type is not supported")
-
